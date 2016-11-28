@@ -1,8 +1,9 @@
 package tweetoro
 
+/*
 type Coordinates struct {
-	Coordinates [2]float `json:"coordinates"`
-	Type        string   `json:"type"`
+	Coordinates [2]float64 `json:"coordinates"`
+	Type        string     `json:"type"`
 }
 
 type Contributors struct {
@@ -92,3 +93,4 @@ type Tweet struct {
 	WithheldInCountries  []string               `json:"withheld_in_countries"`
 	WithheldScope        string                 `json:"withheld_scope"`
 }
+*/

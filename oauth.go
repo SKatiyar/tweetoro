@@ -5,35 +5,31 @@ import (
 	"net/http"
 )
 
-const (
-	StreamEndPoint string = "https://stream.twitter.com/1.1/statuses/filter.json"
-)
-
-type Config struct {
+type AuthConfig struct {
 	ConsumerKey       string
 	ConsumerSecret    string
 	AccessToken       string
 	AccessTokenSecret string
 }
 
-func (c Config) validate() error {
-	if len(c.ConsumerKey) < 1 {
+func (ac AuthConfig) validate() error {
+	if len(ac.ConsumerKey) < 1 {
 		return ErrInvalidConsumerKey
 	}
-	if len(c.ConsumerSecret) < 1 {
+	if len(ac.ConsumerSecret) < 1 {
 		return ErrInvalidConsumerSecret
 	}
-	if len(c.AccessToken) < 1 {
+	if len(ac.AccessToken) < 1 {
 		return ErrInvalidAccessToken
 	}
-	if len(c.AccessTokenSecret) < 1 {
+	if len(ac.AccessTokenSecret) < 1 {
 		return ErrInvalidAccessTokenSecret
 	}
 
 	return nil
 }
 
-func NewClient(params Config) (*http.Client, error) {
+func NewClient(params AuthConfig) (*http.Client, error) {
 	if paramsErr := params.validate(); paramsErr != nil {
 		return nil, paramsErr
 	}
