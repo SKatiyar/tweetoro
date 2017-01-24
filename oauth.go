@@ -1,7 +1,7 @@
 package tweetoro
 
 import (
-	"github.com/mrjones/oauth"
+	"github.com/dghubble/oauth1"
 	"net/http"
 )
 
@@ -29,20 +29,9 @@ func (ac AuthConfig) validate() error {
 	return nil
 }
 
-func NewClient(params AuthConfig) (*http.Client, error) {
-	if paramsErr := params.validate(); paramsErr != nil {
-		return nil, paramsErr
-	}
+func (ac AuthConfig) client() *http.Client {
+	config := oauth1.NewConfig(ac.ConsumerKey, ac.ConsumerSecret)
+	token := oauth1.NewToken(ac.AccessToken, ac.AccessTokenSecret)
 
-	auth := oauth.NewConsumer(params.ConsumerKey, params.ConsumerSecret, oauth.ServiceProvider{})
-
-	client, clientErr := auth.MakeHttpClient(&oauth.AccessToken{
-		Token:  params.AccessToken,
-		Secret: params.AccessTokenSecret,
-	})
-	if clientErr != nil {
-		return nil, clientErr
-	}
-
-	return client, nil
+	return config.Client(oauth1.NoContext, token)
 }
