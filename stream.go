@@ -33,30 +33,13 @@ func (s *Stream) Close() error {
 	return s.resStream.Body.Close()
 }
 
-/*
-func (s *Stream) run() {
-	s.scanner.Split(bufio.SplitFunc(ScanCRLF))
-
-	for s.scanner.Scan() {
-		data := s.scanner.Bytes()
-		dataErr := s.scanner.Err()
-		if dataErr != nil {
-			break
-		}
-
-		s.dataChn <- data
-	}
-
-	return
-}
-*/
-
 func ScanCRLF(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	if atEOF && len(data) == 0 {
-		return 0, nil, nil
+		return 0, make([]byte, 0, 1), nil
 	}
 	if i := bytes.Index(data, []byte{'\r', '\n'}); i >= 0 {
 		// We have a full newline-terminated line.
+		println(i)
 		return i + 2, dropCR(data[0:i]), nil
 	}
 	// If we're at EOF, we have a final, non-terminated line. Return it.
@@ -64,7 +47,7 @@ func ScanCRLF(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		return len(data), dropCR(data), nil
 	}
 	// Request more data.
-	return 0, nil, nil
+	return 0, make([]byte, 0, 1), nil
 }
 
 // dropCR drops a terminal \r from the data.

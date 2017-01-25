@@ -42,7 +42,10 @@ func NewPublicFilterStream(opts FilterStreamOptions) (*Stream, error) {
 		return nil, responseErr
 	}
 
-	return &Stream{response, bufio.NewScanner(response.Body)}, nil
+	newScanner := bufio.NewScanner(response.Body)
+	newScanner.Split(bufio.SplitFunc(ScanCRLF))
+
+	return &Stream{response, newScanner}, nil
 }
 
 func NewPublicSampleStream(opts SampleStreamOptions) (*Stream, error) {
