@@ -3,7 +3,6 @@ package tweetoro
 import (
 	"bufio"
 	"bytes"
-	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -37,24 +36,10 @@ func NewPublicFilterStream(opts FilterStreamOptions) (*Stream, error) {
 	if reqBodyErr != nil {
 		return nil, reqBodyErr
 	}
-	if paramsErr := opts.AuthOpts.validate(); paramsErr != nil {
-		return nil, paramsErr
-	}
 
-	request, requestErr := http.NewRequest(http.MethodPost, PublicStreamFilterEndPoint, reqBody)
-	if requestErr != nil {
-		return nil, requestErr
-	}
-
-	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-	response, responseErr := opts.AuthOpts.client().Do(request)
+	response, responseErr := NewClient(opts.AuthOpts, PublicStreamFilterEndPoint, http.MethodPost, reqBody)
 	if responseErr != nil {
 		return nil, responseErr
-	}
-
-	if response.StatusCode != 200 {
-		return nil, errors.New(response.Status)
 	}
 
 	return &Stream{response, bufio.NewScanner(response.Body)}, nil

@@ -30,8 +30,6 @@ func (ac AuthConfig) validate() error {
 }
 
 func (ac AuthConfig) client() *http.Client {
-	config := oauth1.NewConfig(ac.ConsumerKey, ac.ConsumerSecret)
-	token := oauth1.NewToken(ac.AccessToken, ac.AccessTokenSecret)
-
-	return config.Client(oauth1.NoContext, token)
+	return oauth1.NewConfig(ac.ConsumerKey, ac.ConsumerSecret).
+		Client(oauth1.NoContext, oauth1.NewToken(ac.AccessToken, ac.AccessTokenSecret))
 }

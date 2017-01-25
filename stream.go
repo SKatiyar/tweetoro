@@ -17,7 +17,12 @@ func (s *Stream) Next() bool {
 }
 
 func (s *Stream) Scan(dst interface{}) error {
-	return json.Unmarshal(s.scanner.Bytes(), dst)
+	data := s.scanner.Bytes()
+	if len(data) != 0 {
+		return json.Unmarshal(data, dst)
+	}
+
+	return nil
 }
 
 func (s *Stream) Error() error {
